@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
-  show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] } }),
+  show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.7, delay: i * 0.08, ease: "easeOut" as const } }),
 };
 
 function SectionLabel({ index, label }: { index: string; label: string }) {
