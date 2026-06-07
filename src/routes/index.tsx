@@ -999,6 +999,7 @@ function Portfolio() {
         <Software />
         <Internship />
         <Experience />
+        <Drawings />
         <Education />
         <Thesis />
         <Certifications />
