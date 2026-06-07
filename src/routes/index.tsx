@@ -1,10 +1,188 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import projHotel from "@/assets/proj-hotel.jpg";
 import projResidential from "@/assets/proj-residential.jpg";
 import projClinic from "@/assets/proj-clinic.jpg";
 import projFashion from "@/assets/proj-fashion.jpg";
+import dwgEye1 from "@/assets/dwg-eye_clinic-1.jpg.asset.json";
+import dwgEye2 from "@/assets/dwg-eye_clinic-2.jpg.asset.json";
+import dwgEye3 from "@/assets/dwg-eye_clinic-3.jpg.asset.json";
+import dwgRest1 from "@/assets/dwg-restaurant-1.jpg.asset.json";
+import dwgRest2 from "@/assets/dwg-restaurant-2.jpg.asset.json";
+import dwgRest3 from "@/assets/dwg-restaurant-3.jpg.asset.json";
+import dwgVm1 from "@/assets/dwg-vm_store_design-1.jpg.asset.json";
+import dwgVm2 from "@/assets/dwg-vm_store_design-2.jpg.asset.json";
+import dwgVm3 from "@/assets/dwg-vm_store_design-3.jpg.asset.json";
+import dwgVm4 from "@/assets/dwg-vm_store_design-4.jpg.asset.json";
+
+const DWG_PROJECTS = [
+  {
+    key: "eye",
+    title: "Eye Clinic",
+    type: "Healthcare · Floor Plan",
+    meta: "54'6\" × 41'6\" · AutoCAD",
+    desc: "Functional medical layout featuring a dedicated examination room, two assistant offices, dispensary, waiting bay for 12, and segregated staff utility zones around a central lobby spine.",
+    sheets: [
+      { url: dwgEye1.url, label: "Master Floor Plan" },
+      { url: dwgEye2.url, label: "Furniture & Zoning" },
+      { url: dwgEye3.url, label: "Detail Sheet" },
+    ],
+  },
+  {
+    key: "restaurant",
+    title: "Restaurant",
+    type: "Hospitality · Master Layout",
+    meta: "Multi-zone F&B · AutoCAD",
+    desc: "Master layout combining a VIP lounge, VVIP members' enclosure, individual seating hall behind a partition wall, full commercial kitchen with cold/hot prep, buffet line, and dual powder rooms.",
+    sheets: [
+      { url: dwgRest1.url, label: "Master Layout" },
+      { url: dwgRest2.url, label: "Seating & Circulation" },
+      { url: dwgRest3.url, label: "Service Zone" },
+    ],
+  },
+  {
+    key: "vm",
+    title: "VM Store Design",
+    type: "Retail · Visual Merchandising",
+    meta: "Front Elevation · Scale ft'/in\"",
+    desc: "Visual merchandising elevation for a fashion retail front — twin window displays flanking a central seated try-on lounge, with measured 15' display bays at 10' clear height under an RCC slab.",
+    sheets: [
+      { url: dwgVm1.url, label: "Front Elevation" },
+      { url: dwgVm2.url, label: "Display Plan" },
+      { url: dwgVm3.url, label: "Measurements" },
+      { url: dwgVm4.url, label: "Detail" },
+    ],
+  },
+];
+
+function Drawings() {
+  const [proj, setProj] = useState(0);
+  const [sheet, setSheet] = useState(0);
+  const [dir, setDir] = useState(1);
+  const current = DWG_PROJECTS[proj];
+  const cur = current.sheets[sheet];
+
+  const swapProject = (i: number) => {
+    if (i === proj) return;
+    setDir(i > proj ? 1 : -1);
+    setProj(i);
+    setSheet(0);
+  };
+  const nextSheet = () => { setDir(1); setSheet((s) => (s + 1) % current.sheets.length); };
+  const prevSheet = () => { setDir(-1); setSheet((s) => (s - 1 + current.sheets.length) % current.sheets.length); };
+
+  return (
+    <Section id="drawings" className="bg-card/20">
+      <div className="mx-auto max-w-[1600px]">
+        <SectionLabel index="04.5 / 10" label="Technical Drawings · DWG Files" />
+        <h2 className="mt-6 max-w-4xl text-5xl font-light leading-[1] tracking-tight md:text-7xl">
+          From concept to <span className="text-neon-glow italic">construction</span> sheets.
+        </h2>
+        <p className="mt-6 max-w-2xl text-muted-foreground">
+          Tap a project tab — each opens a fresh window of working drawings. Flip through plans, elevations, and detail sheets exactly as delivered from AutoCAD.
+        </p>
+
+        {/* Tabs */}
+        <div className="mt-12 flex flex-wrap gap-2 border-b border-border">
+          {DWG_PROJECTS.map((p, i) => (
+            <button
+              key={p.key}
+              onClick={() => swapProject(i)}
+              className={`relative px-5 py-3 font-mono text-xs uppercase tracking-[0.25em] transition-colors ${
+                i === proj ? "text-neon" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span className="mr-2 opacity-60">0{i + 1}</span>{p.title}
+              {i === proj && (
+                <motion.span
+                  layoutId="dwg-underline"
+                  className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-neon shadow-[0_0_10px_var(--neon)]"
+                />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Window */}
+        <div className="relative mt-10 overflow-hidden rounded-md border border-border bg-background" style={{ perspective: 1600 }}>
+          <AnimatePresence mode="wait" custom={dir}>
+            <motion.div
+              key={current.key + sheet}
+              custom={dir}
+              initial={{ opacity: 0, rotateY: dir * 35, x: dir * 80 }}
+              animate={{ opacity: 1, rotateY: 0, x: 0 }}
+              exit={{ opacity: 0, rotateY: -dir * 35, x: -dir * 80 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="grid gap-6 p-6 md:grid-cols-[1fr_320px] md:p-8"
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              {/* sheet image */}
+              <div className="relative">
+                <div className="absolute inset-0 dot-grid opacity-30" />
+                <div className="relative overflow-hidden rounded-sm border border-border bg-white">
+                  <img
+                    src={cur.url}
+                    alt={`${current.title} — ${cur.label}`}
+                    loading="lazy"
+                    className="w-full object-contain"
+                  />
+                  <div className="absolute left-3 top-3 rounded-full border border-neon/60 bg-background/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-neon backdrop-blur">
+                    DWG · {String(sheet + 1).padStart(2, "0")} / {String(current.sheets.length).padStart(2, "0")}
+                  </div>
+                </div>
+              </div>
+
+              {/* info panel */}
+              <aside className="flex flex-col justify-between gap-6">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.3em] text-neon">{current.type}</p>
+                  <h3 className="mt-3 text-4xl font-light tracking-tight">{current.title}</h3>
+                  <p className="mt-2 font-mono text-xs text-muted-foreground">{current.meta}</p>
+                  <p className="mt-5 text-sm leading-relaxed text-muted-foreground">{current.desc}</p>
+
+                  <div className="mt-6 rounded-md border border-border bg-card/50 p-4">
+                    <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Current Sheet</div>
+                    <div className="mt-1 text-lg">{cur.label}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-3">
+                  <button
+                    onClick={prevSheet}
+                    className="rounded-full border border-border px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:border-neon hover:text-neon"
+                  >
+                    ← Prev
+                  </button>
+                  <div className="flex gap-1.5">
+                    {current.sheets.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => { setDir(i > sheet ? 1 : -1); setSheet(i); }}
+                        className={`h-1.5 rounded-full transition-all ${
+                          i === sheet ? "w-8 bg-neon" : "w-4 bg-border hover:bg-muted-foreground"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    onClick={nextSheet}
+                    className="rounded-full border border-neon bg-neon/10 px-4 py-2 font-mono text-xs uppercase tracking-widest text-neon transition-all hover:shadow-[0_0_20px_var(--neon)]"
+                  >
+                    Next →
+                  </button>
+                </div>
+              </aside>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* scanline overlay */}
+          <div className="pointer-events-none absolute inset-0 scanline" />
+        </div>
+      </div>
+    </Section>
+  );
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -821,6 +999,7 @@ function Portfolio() {
         <Software />
         <Internship />
         <Experience />
+        <Drawings />
         <Education />
         <Thesis />
         <Certifications />
