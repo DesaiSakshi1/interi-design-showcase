@@ -2,9 +2,21 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import projHotel from "@/assets/proj-hotel.jpg";
+import projHotel2 from "@/assets/proj-hotel-2.jpg";
+import projHotel3 from "@/assets/proj-hotel-3.jpg";
+import projHotel4 from "@/assets/proj-hotel-4.jpg";
 import projResidential from "@/assets/proj-residential.jpg";
+import projResidential2 from "@/assets/proj-residential-2.jpg";
+import projResidential3 from "@/assets/proj-residential-3.jpg";
+import projResidential4 from "@/assets/proj-residential-4.jpg";
 import projClinic from "@/assets/proj-clinic.jpg";
+import projClinic2 from "@/assets/proj-clinic-2.jpg";
+import projClinic3 from "@/assets/proj-clinic-3.jpg";
+import projClinic4 from "@/assets/proj-clinic-4.jpg";
 import projFashion from "@/assets/proj-fashion.jpg";
+import projFashion2 from "@/assets/proj-fashion-2.jpg";
+import projFashion3 from "@/assets/proj-fashion-3.jpg";
+import projFashion4 from "@/assets/proj-fashion-4.jpg";
 import dwgEye1 from "@/assets/dwg-eye_clinic-1.jpg.asset.json";
 import dwgEye2 from "@/assets/dwg-eye_clinic-2.jpg.asset.json";
 import dwgEye3 from "@/assets/dwg-eye_clinic-3.jpg.asset.json";
@@ -547,32 +559,150 @@ const PROJECTS = [
   {
     title: "The Noble Stag",
     type: "Boutique Hotel · Hospitality",
-    img: projHotel,
+    images: [
+      { src: projHotel, caption: "Concept Exterior" },
+      { src: projHotel2, caption: "Grand Lobby" },
+      { src: projHotel3, caption: "Skyline Suite" },
+      { src: projHotel4, caption: "Signature Dining" },
+    ],
     desc: "Full-scale hotel concept with lobby, guest rooms and dining spaces engineered around luxury aesthetics and operational flow.",
     tags: ["Lobby", "Suites", "F&B", "Lighting Design"],
   },
   {
     title: "3BHK Residence",
     type: "Residential · Modular Living",
-    img: projResidential,
+    images: [
+      { src: projResidential, caption: "Living Hall" },
+      { src: projResidential2, caption: "Family Lounge" },
+      { src: projResidential3, caption: "Modular Kitchen" },
+      { src: projResidential4, caption: "Master Bedroom" },
+    ],
     desc: "Modern, elegant interiors with modular kitchen, false-ceiling concepts and custom-built furniture tuned to the family's rhythm.",
     tags: ["Modular Kitchen", "False Ceiling", "Custom Furniture"],
   },
   {
     title: "Eye Clinic",
     type: "Healthcare · Commercial",
-    img: projClinic,
+    images: [
+      { src: projClinic, caption: "Façade Concept" },
+      { src: projClinic2, caption: "Reception" },
+      { src: projClinic3, caption: "Waiting Lounge" },
+      { src: projClinic4, caption: "Exam Room" },
+    ],
     desc: "Modular reception, calm waiting-area design and clinical zones detailed for patient comfort and staff efficiency.",
     tags: ["Reception", "Waiting Area", "Wayfinding"],
   },
   {
     title: "Fashion Flagship",
     type: "Retail · Visual Merchandising",
-    img: projFashion,
+    images: [
+      { src: projFashion, caption: "Store Front" },
+      { src: projFashion2, caption: "Apparel Floor" },
+      { src: projFashion3, caption: "Window Display" },
+      { src: projFashion4, caption: "Fitting Lounge" },
+    ],
     desc: "Visual merchandising principles applied to layout and product placement. Vendor coordination for premium-quality execution.",
     tags: ["VM", "Display", "Material"],
   },
 ];
+
+function ProjectGallery({ images, index: projectIndex }: { images: { src: string; caption: string }[]; index: number }) {
+  const [i, setI] = useState(0);
+  const [dir, setDir] = useState(0);
+  const go = (next: number) => {
+    setDir(next > i ? 1 : -1);
+    setI((next + images.length) % images.length);
+  };
+  return (
+    <div className="relative">
+      <div className="absolute -inset-4 dot-grid opacity-50" />
+      <div className="relative overflow-hidden rounded-md border border-border bg-card">
+        <div className="relative aspect-[4/3] w-full">
+          <AnimatePresence initial={false} custom={dir} mode="popLayout">
+            <motion.img
+              key={i}
+              src={images[i].src}
+              alt={images[i].caption}
+              width={1280}
+              height={896}
+              loading="lazy"
+              draggable={false}
+              custom={dir}
+              initial={{ x: dir > 0 ? "100%" : "-100%", opacity: 0.4 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: dir > 0 ? "-100%" : "100%", opacity: 0.4 }}
+              transition={{ duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.18}
+              onDragEnd={(_, info) => {
+                if (info.offset.x < -60) go(i + 1);
+                else if (info.offset.x > 60) go(i - 1);
+              }}
+              className="absolute inset-0 h-full w-full cursor-grab object-cover active:cursor-grabbing"
+            />
+          </AnimatePresence>
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
+        </div>
+
+        <div className="absolute left-3 top-3 rounded-full border border-neon/60 bg-background/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-neon backdrop-blur">
+          Render · {String(projectIndex + 1).padStart(2, "0")} / {String(i + 1).padStart(2, "0")}
+        </div>
+        <div className="absolute right-3 top-3 rounded-full border border-border bg-background/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground backdrop-blur">
+          {images[i].caption}
+        </div>
+
+        {/* Arrows */}
+        <button
+          aria-label="Previous render"
+          onClick={() => go(i - 1)}
+          className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-border bg-background/70 p-3 font-mono text-foreground backdrop-blur transition hover:bg-neon hover:text-primary-foreground"
+        >
+          ←
+        </button>
+        <button
+          aria-label="Next render"
+          onClick={() => go(i + 1)}
+          className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-border bg-background/70 p-3 font-mono text-foreground backdrop-blur transition hover:bg-neon hover:text-primary-foreground"
+        >
+          →
+        </button>
+
+        {/* Dots */}
+        <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+          {images.map((_, idx) => (
+            <button
+              key={idx}
+              aria-label={`Go to render ${idx + 1}`}
+              onClick={() => go(idx)}
+              className={`h-1.5 rounded-full transition-all ${idx === i ? "w-8 bg-neon" : "w-1.5 bg-border hover:bg-muted-foreground"}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Thumbnails */}
+      <div className="mt-3 grid grid-cols-4 gap-2">
+        {images.map((img, idx) => (
+          <button
+            key={idx}
+            onClick={() => go(idx)}
+            className={`group relative overflow-hidden rounded border transition ${idx === i ? "border-neon" : "border-border opacity-60 hover:opacity-100"}`}
+          >
+            <img
+              src={img.src}
+              alt={img.caption}
+              width={320}
+              height={224}
+              loading="lazy"
+              className="aspect-[4/3] w-full object-cover"
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function Experience() {
   return (
@@ -595,22 +725,7 @@ function Experience() {
               transition={{ duration: 0.8, ease: "easeOut" }}
               className={`grid items-center gap-10 md:grid-cols-2 ${i % 2 ? "md:[&>div:first-child]:order-2" : ""}`}
             >
-              <div className="relative">
-                <div className="absolute -inset-4 dot-grid opacity-50" />
-                <div className="relative overflow-hidden rounded-md border border-border">
-                  <img
-                    src={p.img}
-                    alt={p.title}
-                    width={1280}
-                    height={896}
-                    loading="lazy"
-                    className="aspect-[4/3] w-full object-cover transition-transform duration-[1500ms] hover:scale-105"
-                  />
-                  <div className="absolute left-3 top-3 rounded-full border border-neon/60 bg-background/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-neon backdrop-blur">
-                    Render · {String(i + 1).padStart(2, "0")}
-                  </div>
-                </div>
-              </div>
+              <ProjectGallery images={p.images} index={i} />
               <div>
                 <p className="font-mono text-xs uppercase tracking-[0.3em] text-neon">{p.type}</p>
                 <h3 className="mt-4 text-4xl font-light tracking-tight md:text-6xl">{p.title}</h3>
@@ -622,6 +737,9 @@ function Experience() {
                     </li>
                   ))}
                 </ul>
+                <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                  ← Swipe / click arrows · {p.images.length} renders
+                </p>
               </div>
             </motion.article>
           ))}
@@ -630,6 +748,7 @@ function Experience() {
     </Section>
   );
 }
+
 
 /* ------------------------- 05 EDUCATION ------------------------- */
 
