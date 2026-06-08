@@ -628,9 +628,9 @@ function ProjectGallery({ images, index: projectIndex }: { images: { src: string
               loading="lazy"
               draggable={false}
               custom={dir}
-              initial={(d: number) => ({ x: d > 0 ? "100%" : "-100%", opacity: 0.4 })}
+              initial={{ x: dir > 0 ? "100%" : "-100%", opacity: 0.4 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={(d: number) => ({ x: d > 0 ? "-100%" : "100%", opacity: 0.4 })}
+              exit={{ x: dir > 0 ? "-100%" : "100%", opacity: 0.4 }}
               transition={{ duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
