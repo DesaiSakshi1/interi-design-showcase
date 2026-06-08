@@ -386,7 +386,7 @@ function Software() {
         </h2>
 
         <div className="mt-16 overflow-hidden rounded-lg border border-border bg-card">
-          {SOFTWARES.map((s, i) => (
+          {[...SOFTWARES].sort((a, b) => b.level - a.level).map((s, i) => (
             <motion.div
               key={s.name}
               initial={{ opacity: 0, x: -24 }}
