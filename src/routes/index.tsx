@@ -240,7 +240,7 @@ const NAV = [
   ["01", "Intro", "intro"],
   ["02", "Software", "software"],
   ["03", "Internship", "internship"],
-  ["04", "Experience", "experience"],
+  
   ["05", "Education", "education"],
   ["06", "Thesis", "thesis"],
   ["07", "Certs", "certs"],
