@@ -1128,7 +1128,7 @@ function Portfolio() {
         <Hero />
         <Software />
         <Internship />
-        <Experience />
+        
         <Drawings />
         <Education />
         <Thesis />
