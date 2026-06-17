@@ -1129,7 +1129,7 @@ function Portfolio() {
         <Software />
         <Internship />
         
-        <Drawings />
+        
         <Education />
         <Thesis />
         <Certifications />
