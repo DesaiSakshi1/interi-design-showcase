@@ -405,19 +405,19 @@ function Software() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5, delay: i * 0.04 }}
-              className="group relative grid grid-cols-12 items-center gap-6 border-b border-border px-6 py-6 transition-colors last:border-b-0 hover:bg-secondary md:px-10 md:py-8"
+              className="group relative grid grid-cols-12 items-center gap-3 border-b border-border px-4 py-3 transition-colors last:border-b-0 hover:bg-secondary md:px-6 md:py-4"
             >
               <div className="col-span-2 md:col-span-1">
-                <span className="font-mono text-xs text-muted-foreground">/{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-mono text-[10px] text-muted-foreground">/{String(i + 1).padStart(2, "0")}</span>
               </div>
 
               <div className="col-span-10 md:col-span-3">
-                <h3 className="text-2xl font-medium tracking-tight md:text-3xl">{s.name}</h3>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{s.role}</p>
+                <h3 className="text-base font-medium tracking-tight md:text-lg">{s.name}</h3>
+                <p className="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground">{s.role}</p>
               </div>
 
               <div className="col-span-8 md:col-span-5">
-                <div className="grid gap-[3px]" style={{ gridTemplateColumns: "repeat(20, minmax(0,1fr))" }}>
+                <div className="grid gap-[2px]" style={{ gridTemplateColumns: "repeat(20, minmax(0,1fr))" }}>
                   {Array.from({ length: 20 }).map((_, idx) => {
                     const filled = idx < Math.round((s.level / 100) * 20);
                     return (
@@ -430,7 +430,7 @@ function Software() {
                         className="aspect-square rounded-full"
                         style={{
                           backgroundColor: filled ? s.color : "oklch(0.26 0 0)",
-                          boxShadow: filled ? `0 0 6px ${s.color}` : "none",
+                          boxShadow: filled ? `0 0 4px ${s.color}` : "none",
                         }}
                       />
                     );
@@ -439,9 +439,9 @@ function Software() {
               </div>
 
               <div className="col-span-2 flex items-baseline justify-end gap-2 md:col-span-2 md:gap-3">
-                <span className="hidden font-mono text-[10px] uppercase tracking-widest text-muted-foreground md:inline">{s.years}</span>
-                <span className="text-2xl font-light text-foreground md:text-3xl">
-                  {s.level}<span className="text-xs text-muted-foreground">%</span>
+                <span className="hidden font-mono text-[9px] uppercase tracking-widest text-muted-foreground md:inline">{s.years}</span>
+                <span className="text-lg font-light text-foreground md:text-xl">
+                  {s.level}<span className="text-[10px] text-muted-foreground">%</span>
                 </span>
               </div>
 
